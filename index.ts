@@ -2,22 +2,23 @@ import { Observable, timer, interval } from "rxjs";
 
 console.log('App started');
 
-const timer$ = new Observable<number>(subscriber => {
-  const timeoutId = setTimeout(() => {
+const interval$ = new Observable<number>(subscriber => {
+  let counter = 0;
+  
+  const intervalId = setInterval(() => {
     console.log('Timeout!');
-    subscriber.next(0);
-    subscriber.complete();
+    subscriber.next(counter++);
   }, 2000);
 
-  return () => clearTimeout(timeoutId);
+  return () => clearInterval(intervalId);
 });
 
-const subscription = interval(1000).subscribe({
+const subscription = interval$.subscribe({
   next: value => console.log(value),
   complete: () => console.log('Completed')
 });
 
-// setTimeout(() => {
-//   subscription.unsubscribe();
-//   console.log('Unsubscribe');
-// }, 1000);
+setTimeout(() => {
+  subscription.unsubscribe();
+  console.log('Unsubscribe');
+}, 5000);
